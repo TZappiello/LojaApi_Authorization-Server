@@ -3,6 +3,7 @@ package com.lojaapi.auth;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
@@ -20,6 +21,9 @@ public class AuthorizationServerConfing extends AuthorizationServerConfigurerAda
 	@Autowired
 	private AuthenticationManager authenticationManager;
 	
+	@Autowired
+	private UserDetailsService userDetailsService;
+	
 
 	@Override
 	public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
@@ -27,7 +31,7 @@ public class AuthorizationServerConfing extends AuthorizationServerConfigurerAda
 			.inMemory()
 				.withClient("loja-api-web")
 				.secret(passwordEncoder.encode("loja123"))
-				.authorizedGrantTypes("password")
+				.authorizedGrantTypes("password", "refresh_token")
 				.scopes("write", "read")
 				.accessTokenValiditySeconds(60 * 60 * 6)
 			.and()
@@ -37,13 +41,14 @@ public class AuthorizationServerConfing extends AuthorizationServerConfigurerAda
 	
 	@Override
 	public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
-		security.checkTokenAccess("isAuthenticated()");
-//		security.checkTokenAccess("permitAll()");
+//		security.checkTokenAccess("isAuthenticated()");
+		security.checkTokenAccess("permitAll()");
 		
 	}
 	
 	@Override
 	public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
-		endpoints.authenticationManager(authenticationManager);
+		endpoints.authenticationManager(authenticationManager)
+			.userDetailsService(userDetailsService);
 	}
 }
