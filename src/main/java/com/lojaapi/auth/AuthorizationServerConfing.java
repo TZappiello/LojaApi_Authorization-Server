@@ -35,6 +35,13 @@ public class AuthorizationServerConfing extends AuthorizationServerConfigurerAda
 				.scopes("write", "read")
 				.accessTokenValiditySeconds(60 * 60 * 6)		//6 horas
 				.refreshTokenValiditySeconds(60 * 24 * 60 * 60) //60 dias
+		
+			.and()
+				.withClient("lojaanalista")
+				.secret(passwordEncoder.encode("analista123"))
+				.authorizedGrantTypes("authorization_code")
+				.scopes("write", "read")
+				.redirectUris("http://aplicacao-cliente")
 			
 			.and()
 				.withClient("faturamento")
