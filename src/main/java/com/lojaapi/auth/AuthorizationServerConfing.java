@@ -41,8 +41,8 @@ public class AuthorizationServerConfing extends AuthorizationServerConfigurerAda
 				.secret(passwordEncoder.encode("analista123"))
 				.authorizedGrantTypes("authorization_code")
 				.scopes("write", "read")
-				.redirectUris("http://aplicacao-cliente")
-			
+				.redirectUris("http://www.lojaalanista.local:8082")
+			//http://localhost:8081/oauth/authorize?response_type=code&client_id=lojaanalista&state=abc&redirect_uri=http://aplicacao-cliente
 			.and()
 				.withClient("faturamento")
 				.secret(passwordEncoder.encode("faturamento123"))
