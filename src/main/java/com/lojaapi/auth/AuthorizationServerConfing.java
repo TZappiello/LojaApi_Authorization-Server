@@ -49,6 +49,12 @@ public class AuthorizationServerConfing extends AuthorizationServerConfigurerAda
 				.authorizedGrantTypes("client_credentials")
 				.scopes("write", "read")
 				
+			.and()	
+				.withClient("webadmin")
+				.authorizedGrantTypes("implicit")
+				.scopes("write", "read")
+				.redirectUris("http://client-aplication")
+			
 			.and()
 				.withClient("checktoken")
 				.secret(passwordEncoder.encode("check123"));
