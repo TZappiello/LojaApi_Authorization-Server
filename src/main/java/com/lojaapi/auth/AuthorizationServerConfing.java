@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -14,6 +15,8 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Aut
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.CompositeTokenGranter;
 import org.springframework.security.oauth2.provider.TokenGranter;
+import org.springframework.security.oauth2.provider.token.TokenStore;
+import org.springframework.security.oauth2.provider.token.store.redis.RedisTokenStore;
 
 @Configuration
 @EnableAuthorizationServer
@@ -27,6 +30,9 @@ public class AuthorizationServerConfing extends AuthorizationServerConfigurerAda
 	
 	@Autowired
 	private UserDetailsService userDetailsService;
+	
+	@Autowired
+	private RedisConnectionFactory connectionFactory;
 	
 
 	@Override
@@ -42,10 +48,10 @@ public class AuthorizationServerConfing extends AuthorizationServerConfigurerAda
 		
 			.and()
 				.withClient("lojaanalista")
-				.secret(passwordEncoder.encode("analista123"))
+				.secret(passwordEncoder.encode(""))
 				.authorizedGrantTypes("authorization_code")
 				.scopes("write", "read")
-				.redirectUris("http://www.lojaalanista.local:8082")
+				.redirectUris("http://127.0.0.1:5500/")
 			//http://localhost:8081/oauth/authorize?response_type=code&client_id=lojaanalista&state=abc&redirect_uri=http://aplicacao-cliente
 			.and()
 				.withClient("faturamento")
@@ -67,7 +73,8 @@ public class AuthorizationServerConfing extends AuthorizationServerConfigurerAda
 	@Override
 	public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
 //		security.checkTokenAccess("isAuthenticated()");
-		security.checkTokenAccess("permitAll()");
+		security.checkTokenAccess("permitAll()")
+			.allowFormAuthenticationForClients();
 		
 	}
 	
@@ -76,7 +83,12 @@ public class AuthorizationServerConfing extends AuthorizationServerConfigurerAda
 		endpoints.authenticationManager(authenticationManager)
 			.userDetailsService(userDetailsService)
 			.reuseRefreshTokens(false)
+			.tokenStore(redisTokenStore())
 			.tokenGranter(tokenGranter(endpoints));
+	}
+	
+	private TokenStore redisTokenStore() {
+		return new RedisTokenStore(connectionFactory);
 	}
 	
 	private TokenGranter tokenGranter(AuthorizationServerEndpointsConfigurer endpoints) {
