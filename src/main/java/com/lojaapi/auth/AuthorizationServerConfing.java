@@ -98,7 +98,7 @@ public class AuthorizationServerConfing extends AuthorizationServerConfigurerAda
 	@Bean
 	public JwtAccessTokenConverter jwtAccessTokenConverter() {
 		JwtAccessTokenConverter jwtAccessTokenConverter = new JwtAccessTokenConverter();
-		jwtAccessTokenConverter.setSigningKey(secret);
+		jwtAccessTokenConverter.setSigningKey("uyrkfxzfuyflewyffuydfsyufluflugçiurehoihbcsjl");
 		
 		return jwtAccessTokenConverter;
 	}
