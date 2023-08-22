@@ -1,4 +1,4 @@
-package com.lojaapi.auth;
+package com.lojaapi.auth.core;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
