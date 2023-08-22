@@ -1,4 +1,4 @@
-package com.lojaapi.auth;
+package com.lojaapi.auth.core;
 
 import javax.validation.constraints.NotBlank;
 
