@@ -17,6 +17,7 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Aut
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.CompositeTokenGranter;
 import org.springframework.security.oauth2.provider.TokenGranter;
+import org.springframework.security.oauth2.provider.token.TokenEnhancerChain;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.KeyStoreKeyFactory;
 
@@ -89,10 +90,15 @@ public class AuthorizationServerConfing extends AuthorizationServerConfigurerAda
 	
 	@Override
 	public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
+		var enhancerChain = new TokenEnhancerChain();
+		enhancerChain.setTokenEnhancers(
+				Arrays.asList(new JwtCustomClaimsTokenEnhacer(), jwtAccessTokenConverter()));
+		
 		endpoints.authenticationManager(authenticationManager)
 			.userDetailsService(userDetailsService)
 			.reuseRefreshTokens(false)
 			.accessTokenConverter(jwtAccessTokenConverter())
+			.tokenEnhancer(enhancerChain)
 //			.tokenStore(redisTokenStore())
 			.tokenGranter(tokenGranter(endpoints));
 	}
