@@ -13,32 +13,30 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
-
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
-@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@Table(name = "usuario")
+@Table(name = "grupo")
+@Data
 @Entity
-public class UsuarioEntity {
+public class GrupoEntity {
 
-	@EqualsAndHashCode.Include
 	@Id
+	@EqualsAndHashCode.Include
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
 	@Column(nullable = false)
 	private String nome;
 
-	@Column(nullable = false)
-	private String email;
-
-	@Column(nullable = false)
-	private String senha;
-
 	@ManyToMany
-	@JoinTable(name = "grupos_usuarios", joinColumns = @JoinColumn(name = "usuario_id"), 
-			inverseJoinColumns = @JoinColumn(name = "grupo_id"))
-	private Set<GrupoEntity> grupos = new HashSet<>();
+	@JoinTable(name = "grupo_permissao", joinColumns = @JoinColumn(name = "grupo_id"), 
+			inverseJoinColumns = @JoinColumn(name = "permissao_id"))
+	private Set<PermissaoEntity> permissoes = new HashSet<>();
+
 }
