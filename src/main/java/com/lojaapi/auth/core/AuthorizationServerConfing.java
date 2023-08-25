@@ -51,7 +51,7 @@ public class AuthorizationServerConfing extends AuthorizationServerConfigurerAda
 				.withClient("loja-api-web")
 				.secret(passwordEncoder.encode("loja123"))
 				.authorizedGrantTypes("password", "refresh_token")
-				.scopes("write", "read")
+				.scopes("ESCRITA", "LEITURA")
 				.accessTokenValiditySeconds(60 * 60 * 6)		//6 horas
 				.refreshTokenValiditySeconds(60 * 24 * 60 * 60) //60 dias
 		
@@ -59,19 +59,19 @@ public class AuthorizationServerConfing extends AuthorizationServerConfigurerAda
 				.withClient("lojaanalista")
 				.secret(passwordEncoder.encode(""))
 				.authorizedGrantTypes("authorization_code")
-				.scopes("write", "read")
+				.scopes("ESCRITA", "LEITURA")
 				.redirectUris("http://127.0.0.1:5500/")
 			//http://localhost:8081/oauth/authorize?response_type=code&client_id=lojaanalista&state=abc&redirect_uri=http://aplicacao-cliente
 			.and()
 				.withClient("faturamento")
 				.secret(passwordEncoder.encode("faturamento123"))
 				.authorizedGrantTypes("client_credentials")
-				.scopes("write", "read")
+				.scopes("ESCRITA", "LEITURA")
 				
 			.and()	
 				.withClient("webadmin")
 				.authorizedGrantTypes("implicit")
-				.scopes("write", "read")
+				.scopes("ESCRITA", "LEITURA")
 				.redirectUris("http://client-aplication")
 			
 			.and()
