@@ -2,6 +2,8 @@ package com.lojaapi.auth.core;
 
 import java.util.Arrays;
 
+import javax.sql.DataSource;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -25,9 +27,6 @@ import org.springframework.security.oauth2.provider.token.store.KeyStoreKeyFacto
 @EnableAuthorizationServer
 public class AuthorizationServerConfing extends AuthorizationServerConfigurerAdapter {
 
-	@Autowired 
-	private PasswordEncoder passwordEncoder;
-	
 	@Autowired
 	private AuthenticationManager authenticationManager;
 	
@@ -36,47 +35,51 @@ public class AuthorizationServerConfing extends AuthorizationServerConfigurerAda
 	
 	@Autowired
 	private JwtKeyStoreProperties jwtKeyStoreProperties;
+
+	@Autowired
+	private DataSource dataSource;
 	
 //	@Autowired
 //	private RedisConnectionFactory connectionFactory;
 	
 	 @Value("${jwt.secret}")
-	    private String secret;
-	
+	 private String secret;
 
 	@Override
 	public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
 		clients
-			.inMemory()
-				.withClient("loja-api-web")
-				.secret(passwordEncoder.encode("loja123"))
-				.authorizedGrantTypes("password", "refresh_token")
-				.scopes("ESCRITA", "LEITURA")
-				.accessTokenValiditySeconds(60 * 60 * 6)		//6 horas
-				.refreshTokenValiditySeconds(60 * 24 * 60 * 60) //60 dias
+			.jdbc(dataSource);
 		
-			.and()
-				.withClient("lojaanalista")
-				.secret(passwordEncoder.encode(""))
-				.authorizedGrantTypes("authorization_code")
-				.scopes("ESCRITA", "LEITURA")
-				.redirectUris("http://127.0.0.1:5500/")
-			//http://localhost:8081/oauth/authorize?response_type=code&client_id=lojaanalista&state=abc&redirect_uri=http://aplicacao-cliente
-			.and()
-				.withClient("faturamento")
-				.secret(passwordEncoder.encode("faturamento123"))
-				.authorizedGrantTypes("client_credentials")
-				.scopes("ESCRITA", "LEITURA")
-				
-			.and()	
-				.withClient("webadmin")
-				.authorizedGrantTypes("implicit")
-				.scopes("ESCRITA", "LEITURA")
-				.redirectUris("http://client-aplication")
-			
-			.and()
-				.withClient("checktoken")
-				.secret(passwordEncoder.encode("check123"));
+//			.inMemory()
+//				.withClient("loja-api-web")
+//				.secret(passwordEncoder.encode("loja123"))
+//				.authorizedGrantTypes("password", "refresh_token")
+//				.scopes("ESCRITA", "LEITURA")
+//				.accessTokenValiditySeconds(60 * 60 * 6)		//6 horas
+//				.refreshTokenValiditySeconds(60 * 24 * 60 * 60) //60 dias
+//		
+//			.and()
+//				.withClient("lojaanalista")
+//				.secret(passwordEncoder.encode(""))
+//				.authorizedGrantTypes("authorization_code")
+//				.scopes("ESCRITA", "LEITURA")
+//				.redirectUris("http://127.0.0.1:5500/")
+//			//http://localhost:8081/oauth/authorize?response_type=code&client_id=lojaanalista&state=abc&redirect_uri=http://aplicacao-cliente
+//			.and()
+//				.withClient("faturamento")
+//				.secret(passwordEncoder.encode("faturamento123"))
+//				.authorizedGrantTypes("client_credentials")
+//				.scopes("ESCRITA", "LEITURA")
+//				
+//			.and()	
+//				.withClient("webadmin")
+//				.authorizedGrantTypes("implicit")
+//				.scopes("ESCRITA", "LEITURA")
+//				.redirectUris("http://client-aplication")
+//			
+//			.and()
+//				.withClient("checktoken")
+//				.secret(passwordEncoder.encode("check123"));
 	}
 	
 	@Override
